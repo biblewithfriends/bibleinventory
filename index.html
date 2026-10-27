@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#2E5077">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bible Inventory">
 <title>Bible Inventory Log</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,6 +42,13 @@ h2{font-size:1.2rem}
 .label{font-size:.72rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
 
 header.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px}
+.mark{width:44px;height:44px;flex:none}
+.logo h1{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:12px;row-gap:2px;font-size:clamp(1.35rem,3.4vw,1.9rem);line-height:1.2}
+.logo .church{font-weight:600;color:var(--navy)}
+.logo .divider{color:var(--accent);font-weight:400}
+.logo .app{font-weight:700;color:var(--navy)}
+@media (max-width:640px){.logo .divider{display:none}.logo h1{flex-direction:column;align-items:flex-start}.logo .church{font-size:.62em;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text)}}
 .status{font-size:.82rem;color:var(--muted);display:flex;align-items:center;gap:6px}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
 .dot.on{background:var(--navy)}
@@ -93,8 +102,9 @@ fieldset.stats legend small{font-weight:400;color:var(--muted)}
 .stock th:first-child,.stock td:first-child{text-align:left}
 .stock thead th{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .stock thead th span{display:inline-flex;align-items:center;gap:5px}
-.inventory{background:var(--navy-deep);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;color:#FFFFFF}
+.inventory{background:var(--navy-deep);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:14px;color:#FFFFFF;min-width:0}
 .inventory .label{color:var(--accent)}
+.inventory h2{color:#FFFFFF}
 .inv-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .inv-tiles div{display:flex;flex-direction:column;gap:2px;min-width:0}
 .inv-tiles b{font-family:var(--display);font-size:clamp(1.6rem,5vw,2.2rem);line-height:1.1;font-variant-numeric:tabular-nums}
@@ -107,6 +117,9 @@ fieldset.stats legend small{font-weight:400;color:var(--muted)}
 .yearstats dt{font-size:.76rem;color:var(--muted);order:2}
 .yearstats dd{margin:0;font-family:var(--display);font-weight:700;font-size:1.2rem;font-variant-numeric:tabular-nums;order:1}
 
+.month-nav{display:flex;align-items:center;gap:6px}
+.month-nav button{border:1px solid var(--line);background:var(--surface);color:var(--navy);font:600 1rem var(--body);width:32px;height:32px;border-radius:999px;cursor:pointer;line-height:1}
+.month-nav button:disabled{opacity:.35;cursor:default}
 /* pie */
 .pie-wrap{display:grid;grid-template-columns:180px minmax(0,1fr);gap:20px;align-items:center}
 @media (max-width:460px){.pie-wrap{grid-template-columns:1fr;justify-items:center}}
@@ -138,12 +151,65 @@ table.log{width:100%;border-collapse:collapse;font-size:.88rem;min-width:680px}
 .tag{display:inline-block;font-size:.76rem;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--soft);white-space:nowrap}
 .plus{color:var(--accent-text);font-weight:600}
 footer{color:var(--muted);font-size:.8rem;text-align:center}
+
+/* touch devices: comfortable tap targets, no zoom-on-focus on iPhone */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,.chip,.seg button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+@media (pointer:coarse){
+  input,textarea{font-size:16px}
+  .qty input{font-size:1.2rem}
+  .chip{padding:10px 15px;min-height:44px}
+  .seg button{min-height:46px}
+  .btn{min-height:50px}
+  .month-nav button{width:44px;height:44px}
+  .suggest button{padding:8px 12px;min-height:36px}
+}
+
+/* phones */
+@media (max-width:860px){
+  .col{display:contents}
+  .grid > .col > .inventory{order:-1}
+  .grid > section{order:0}
+  .grid > .col > .card{order:1}
+}
+@media (max-width:640px){
+  .wrap{padding-block:18px 40px;gap:16px}
+  .grid{gap:16px}
+  .card,.inventory{padding:16px;gap:14px}
+  .seg{max-width:none}
+  .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stock th,.stock td{padding:7px 0;font-size:.9rem}
+  .stock td:first-child{padding-right:8px}
+  .locs li{grid-template-columns:minmax(0,110px) minmax(0,1fr) 3ch}
+  .card-head .month-nav{width:100%;justify-content:space-between}
+  /* log as stacked rows instead of a wide table */
+  .tablewrap{overflow:visible;margin:0}
+  table.log{min-width:0}
+  .log thead{display:none}
+  .log tbody, .log tr{display:block}
+  .log tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .log td{border:0;padding:0;min-width:0}
+  .log td.d{grid-column:1 / 3}
+  .log td.p{grid-column:3;text-align:right}
+  .log td.loc{grid-column:1 / -1;font-weight:600}
+  .log td.who{grid-column:1 / -1}
+  .log td.n{text-align:left;font-weight:600}
+  .log td.n::before{content:attr(data-l);display:block;font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .log td[colspan]{grid-column:1 / -1}
+}
 </style>
 
 <div class="wrap">
   <header class="top">
     <div>
-      <h1>Bible Inventory Log</h1>
+      <div class="logo">
+        <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M24 13c-4-3-10-4-17-3v26c7-1 13 0 17 3 4-3 10-4 17-3V10c-7-1-13 0-17 3z" fill="#2E5077"/>
+          <path d="M24 13v26" stroke="#E3C9A3" stroke-width="2"/>
+          <path d="M11 17c4-.4 7.5.2 10 1.5M11 22c4-.4 7.5.2 10 1.5M11 27c4-.4 7.5.2 10 1.5M27 18.5c2.5-1.3 6-1.9 10-1.5M27 23.5c2.5-1.3 6-1.9 10-1.5M27 28.5c2.5-1.3 6-1.9 10-1.5" stroke="#E3C9A3" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        </svg>
+        <h1><span class="church">Church in Burlingame</span><span class="divider" aria-hidden="true">|</span><span class="app">Bible Inventory Log</span></h1>
+      </div>
       <p class="sub">English, Spanish, and Chinese New Testaments. Log what you hand out or bring in.</p>
     </div>
     <div class="status"><span class="dot" id="dot"></span><span id="statusText">Loading…</span></div>
@@ -197,8 +263,39 @@ footer{color:var(--muted);font-size:.8rem;text-align:center}
     </section>
 
     <div class="col">
+      <section class="inventory" aria-labelledby="invTitle">
+        <div class="card-head"><h2 id="invTitle">Current Inventory</h2><span class="label">Bibles on hand now</span></div>
+        <div class="inv-tiles">
+          <div><b id="hand-en">0</b><span>English <em id="flag-en"></em></span></div>
+          <div><b id="hand-es">0</b><span>Spanish <em id="flag-es"></em></span></div>
+          <div><b id="hand-cn">0</b><span>Chinese <em id="flag-cn"></em></span></div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="monthTitle">
+        <div class="card-head">
+          <h2 id="monthTitle">Monthly Overview</h2>
+          <div class="month-nav">
+            <span class="label" id="monthRange"></span>
+            <button type="button" id="monthPrev" aria-label="Previous month">‹</button>
+            <button type="button" id="monthNext" aria-label="Next month">›</button>
+          </div>
+        </div>
+        <table class="stock num">
+          <thead><tr><th></th><th><span><i class="sw en"></i>English</span></th><th><span><i class="sw es"></i>Spanish</span></th><th><span><i class="sw cn"></i>Chinese</span></th></tr></thead>
+          <tbody>
+            <tr><td>Bibles Ordered</td><td id="m-in-en">0</td><td id="m-in-es">0</td><td id="m-in-cn">0</td></tr>
+            <tr><td>Bibles Distributed</td><td id="m-out-en">0</td><td id="m-out-es">0</td><td id="m-out-cn">0</td></tr>
+          </tbody>
+        </table>
+        <div class="dist-only" style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:14px">
+          <span class="label">Outreach this month</span>
+          <dl class="yearstats" id="monthStats"></dl>
+        </div>
+      </section>
+
       <section class="card" aria-labelledby="stockTitle">
-        <div class="card-head"><h2 id="stockTitle">2026 overview</h2><span class="label">Jan 1 to today</span></div>
+        <div class="card-head"><h2 id="stockTitle">2026 Annual Overview</h2><span class="label">Jan 1 to today</span></div>
         <table class="stock num">
           <thead><tr><th></th><th><span><i class="sw en"></i>English</span></th><th><span><i class="sw es"></i>Spanish</span></th><th><span><i class="sw cn"></i>Chinese</span></th></tr></thead>
           <tbody>
@@ -206,14 +303,6 @@ footer{color:var(--muted);font-size:.8rem;text-align:center}
             <tr><td>Bibles Distributed</td><td id="out-en">0</td><td id="out-es">0</td><td id="out-cn">0</td></tr>
           </tbody>
         </table>
-        <div class="inventory">
-          <span class="label">Current inventory</span>
-          <div class="inv-tiles">
-            <div><b id="hand-en">0</b><span>English <em id="flag-en"></em></span></div>
-            <div><b id="hand-es">0</b><span>Spanish <em id="flag-es"></em></span></div>
-            <div><b id="hand-cn">0</b><span>Chinese <em id="flag-cn"></em></span></div>
-          </div>
-        </div>
         <div class="dist-only" style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:14px">
           <span class="label">Outreach this year</span>
           <dl class="yearstats" id="yearStats"></dl>
@@ -272,6 +361,7 @@ let entries = [];
 let type = "out";
 let purpose = "Gospelizing";
 let showAll = false;
+let monthOffset = 0; // 0 = this month, 1 = last month, ...
 
 function todayISO(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
 function fmtDate(iso){const [y,m,d]=iso.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}
@@ -313,7 +403,27 @@ function renderSuggest(){
 /* ---------- rendering ---------- */
 function render(){
   const year=String(new Date().getFullYear());
-  $("stockTitle").textContent=year+" overview";
+  $("stockTitle").textContent=year+" Annual Overview";
+  // monthly
+  const now=new Date(),md=new Date(now.getFullYear(),now.getMonth()-monthOffset,1);
+  const mKey=`${md.getFullYear()}-${String(md.getMonth()+1).padStart(2,"0")}`;
+  const mName=md.toLocaleDateString("en-US",{month:"long",year:"numeric"});
+  const mShort=md.toLocaleDateString("en-US",{month:"short"});
+  const lastDay=new Date(md.getFullYear(),md.getMonth()+1,0).getDate();
+  $("monthTitle").textContent=mName+" Monthly Overview";
+  $("monthRange").textContent=monthOffset===0?`${mShort} 1 to today`:`${mShort} 1 to ${lastDay}`;
+  const earliest=entries.reduce((m,e)=>e.date<m?e.date:m,mKey);
+  $("monthPrev").disabled=mKey<=earliest.slice(0,7);
+  $("monthNext").disabled=monthOffset===0;
+  const mt={in:{},out:{}},mStats={};
+  for(const [c] of LANGS){mt.in[c]=0;mt.out[c]=0}
+  for(const e of entries){
+    if(!e.date.startsWith(mKey))continue;
+    for(const [c,k] of LANGS){if(e[k]>0)mt.in[c]+=e[k];else mt.out[c]-=e[k]}
+    for(const [k] of STATS)mStats[k]=(mStats[k]||0)+(+e[k]||0);
+  }
+  for(const [c] of LANGS){$("m-in-"+c).textContent=mt.in[c];$("m-out-"+c).textContent=mt.out[c]}
+  $("monthStats").innerHTML=STATS.map(([k,l])=>`<div><dt>${l}</dt><dd>${mStats[k]||0}</dd></div>`).join("");
   const tot={in:{},out:{},hand:{}},yearTot={},byP=new Map();
   for(const [c] of LANGS){tot.in[c]=0;tot.out[c]=0;tot.hand[c]=0}
   for(const e of entries){
@@ -354,10 +464,10 @@ function render(){
   const sorted=entries.map((e,i)=>({e,i})).filter(x=>isIn(x.e)===inMode).sort((a,b)=>b.e.date.localeCompare(a.e.date)||b.i-a.i).map(x=>x.e);
   const shown=showAll?sorted:sorted.slice(0,10);
   const n=v=>v>0?`<span class="plus">+${v}</span>`:v<0?String(-v):"–";
-  $("logBody").innerHTML=shown.map(e=>`<tr><td class="d">${fmtDate(e.date)}</td><td><span class="tag">${esc(e.purpose)}</span></td>
-      <td class="dist-only">${esc(e.location)||'<span class="sub">–</span>'}</td>
-      <td>${esc(e.name)}${inMode&&e.location?`<span class="note">From ${esc(e.location)}</span>`:""}${statLine(e)}${e.notes?`<span class="note${inMode?"":" testi"}">${esc(e.notes)}</span>`:""}</td>
-      <td class="n">${n(e.english)}</td><td class="n">${n(e.spanish)}</td><td class="n">${n(e.chinese)}</td></tr>`).join("")
+  $("logBody").innerHTML=shown.map(e=>`<tr><td class="d">${fmtDate(e.date)}</td><td class="p"><span class="tag">${esc(e.purpose)}</span></td>
+      <td class="dist-only loc">${esc(e.location)||'<span class="sub">–</span>'}</td>
+      <td class="who">${esc(e.name)}${inMode&&e.location?`<span class="note">From ${esc(e.location)}</span>`:""}${statLine(e)}${e.notes?`<span class="note${inMode?"":" testi"}">${esc(e.notes)}</span>`:""}</td>
+      <td class="n" data-l="English">${n(e.english)}</td><td class="n" data-l="Spanish">${n(e.spanish)}</td><td class="n" data-l="Chinese">${n(e.chinese)}</td></tr>`).join("")
     ||`<tr><td colspan="7" class="sub">No ${inMode?"inventory":"distribution"} entries yet. Use the form to add the first one.</td></tr>`;
   $("logCount").textContent=sorted.length+" entries";
   $("logTitle").textContent=inMode?"Inventory log":"Distribution log";
@@ -425,6 +535,8 @@ $("typeOut").onclick=()=>setType("out");
 $("typeIn").onclick=()=>setType("in");
 $("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;purpose=b.dataset.p;renderChips();if(purpose==="__other")$("otherPurpose").focus()});
 $("moreBtn").onclick=()=>{showAll=!showAll;render()};
+$("monthPrev").onclick=()=>{monthOffset++;render()};
+$("monthNext").onclick=()=>{if(monthOffset>0){monthOffset--;render()}};
 $("location").addEventListener("input",renderSuggest);
 $("locSuggest").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;$("location").value=b.dataset.loc;renderSuggest();$("location").focus()});
 
