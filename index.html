@@ -133,8 +133,7 @@ details.outreach[open] summary::after{transform:rotate(-135deg)}
 details.outreach[open] .yearstats{margin-top:10px}
 .share{display:flex;flex-wrap:wrap;gap:10px;align-items:center;border-top:1px solid rgba(255,255,255,.15);padding-top:14px}
 .share .btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;font-size:.95rem;padding:11px 18px}
-.share-wa{background:var(--accent);color:var(--navy-deep)}
-.share-copy{background:transparent;color:#FFFFFF;border:1px solid rgba(255,255,255,.45)!important}
+.share-copy{background:var(--accent);color:var(--navy-deep)}
 .share-msg{font-size:.85rem;color:var(--accent)}
 .share-note{margin:0;font-size:.78rem;color:rgba(255,255,255,.75)}
 #shareFallback{width:100%;min-height:150px;font-size:14px;background:#FFFFFF;color:var(--text)}
@@ -285,8 +284,7 @@ button,.chip,.seg button{touch-action:manipulation;-webkit-tap-highlight-color:t
           <div><b id="hand-cn">0</b><span>Chinese <em id="flag-cn"></em></span></div>
         </div>
         <div class="share">
-          <a class="btn share-wa" id="shareWa" href="https://wa.me/" target="_blank" rel="noopener">Send in WhatsApp</a>
-          <button type="button" class="btn share-copy" id="shareCopy">Copy text</button>
+          <button type="button" class="btn share-copy" id="shareCopy">Copy stats</button>
           <span class="share-msg" id="shareMsg" role="status" aria-live="polite"></span>
         </div>
         <p class="share-note">Shares current inventory, this month and this year.</p>
@@ -509,7 +507,6 @@ function buildShare(year,tot){
     `*${m.name}*`,...L.map(([c,n])=>`${n}: ${m.mt.in[c]} ordered, ${m.mt.out[c]} distributed`),"",
     `*${year} so far*`,...L.map(([c,n])=>`${n}: ${tot.in[c]} ordered, ${tot.out[c]} distributed`)];
   shareText=lines.join("\n");
-  $("shareWa").href="https://wa.me/?text="+encodeURIComponent(shareText);
 }
 
 function statLine(e){
@@ -605,7 +602,7 @@ $("entryForm").addEventListener("submit",async ev=>{
 
 $("shareCopy").onclick=()=>{
   const msg=$("shareMsg");
-  const done=()=>{msg.textContent="Copied. Open WhatsApp and paste.";setTimeout(()=>msg.textContent="",4000)};
+  const done=()=>{msg.textContent="Copied. Paste it into WhatsApp.";setTimeout(()=>msg.textContent="",4000)};
   const fallback=()=>{const t=$("shareFallback");t.hidden=false;t.value=shareText;t.focus();t.select();msg.textContent="Press and hold the text, then Copy."};
   try{navigator.clipboard.writeText(shareText).then(done,fallback)}catch(e){fallback()}
 };
