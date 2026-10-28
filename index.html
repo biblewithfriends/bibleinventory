@@ -125,6 +125,20 @@ fieldset.stats legend small{font-weight:400;color:var(--muted)}
 .month-nav{display:flex;align-items:center;gap:6px}
 .month-nav button{border:1px solid var(--line);background:var(--surface);color:var(--navy);font:600 1rem var(--body);width:32px;height:32px;border-radius:999px;cursor:pointer;line-height:1}
 .month-nav button:disabled{opacity:.35;cursor:default}
+details.outreach{border-top:1px solid var(--line);padding-top:12px}
+details.outreach summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:40px;font-size:.78rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+details.outreach summary::-webkit-details-marker{display:none}
+details.outreach summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--navy);border-bottom:2px solid var(--navy);transform:rotate(45deg);margin-right:6px;transition:transform .2s}
+details.outreach[open] summary::after{transform:rotate(-135deg)}
+details.outreach[open] .yearstats{margin-top:10px}
+.share{display:flex;flex-wrap:wrap;gap:10px;align-items:center;border-top:1px solid rgba(255,255,255,.15);padding-top:14px}
+.share .btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;font-size:.95rem;padding:11px 18px}
+.share-wa{background:var(--accent);color:var(--navy-deep)}
+.share-copy{background:transparent;color:#FFFFFF;border:1px solid rgba(255,255,255,.45)!important}
+.share-msg{font-size:.85rem;color:var(--accent)}
+.share-note{margin:0;font-size:.78rem;color:rgba(255,255,255,.75)}
+#shareFallback{width:100%;min-height:150px;font-size:14px;background:#FFFFFF;color:var(--text)}
+@media (max-width:640px){.share .btn{flex:1 1 140px}}
 /* pie */
 .pie-wrap{display:grid;grid-template-columns:180px minmax(0,1fr);gap:20px;align-items:center}
 @media (max-width:460px){.pie-wrap{grid-template-columns:1fr;justify-items:center}}
@@ -231,7 +245,6 @@ button,.chip,.seg button{touch-action:manipulation;-webkit-tap-highlight-color:t
         <div class="field dist-only">
           <span id="purposeLabel">Purpose</span>
           <div class="chips" id="chips" role="group" aria-labelledby="purposeLabel"></div>
-          <input id="otherPurpose" type="text" maxlength="60" placeholder="Write your own purpose, e.g. Prison ministry" aria-label="Your own purpose" hidden>
         </div>
 
         <div class="row3 qty">
@@ -256,7 +269,7 @@ button,.chip,.seg button{touch-action:manipulation;-webkit-tap-highlight-color:t
         </fieldset>
 
         <label class="field"><span id="nameLabel">Your name</span><input id="name" type="text" maxlength="80" autocomplete="name" placeholder="Name, or names of everyone who went" required></label>
-        <label class="field"><span id="notesLabel">Testimonials <small>share this during prayer meeting or Lord's Day</small></span><textarea id="notes" maxlength="1000" placeholder="Who did you meet? How did the Lord move?"></textarea></label>
+        <label class="field"><span id="notesLabel">Testimonials <small>optional · share during prayer meeting or the Lord's Day</small></span><textarea id="notes" maxlength="1000" placeholder="Who did you meet? How did the Lord move?"></textarea></label>
 
         <button class="btn" type="submit" id="submitBtn">Submit distribution</button>
         <p class="msg" id="formMsg" role="status" aria-live="polite"></p>
@@ -271,6 +284,13 @@ button,.chip,.seg button{touch-action:manipulation;-webkit-tap-highlight-color:t
           <div><b id="hand-es">0</b><span>Spanish <em id="flag-es"></em></span></div>
           <div><b id="hand-cn">0</b><span>Chinese <em id="flag-cn"></em></span></div>
         </div>
+        <div class="share">
+          <a class="btn share-wa" id="shareWa" href="https://wa.me/" target="_blank" rel="noopener">Send in WhatsApp</a>
+          <button type="button" class="btn share-copy" id="shareCopy">Copy text</button>
+          <span class="share-msg" id="shareMsg" role="status" aria-live="polite"></span>
+        </div>
+        <p class="share-note">Shares current inventory, this month and this year.</p>
+        <textarea id="shareFallback" readonly hidden></textarea>
       </section>
 
       <section class="card" aria-labelledby="monthTitle">
@@ -289,10 +309,10 @@ button,.chip,.seg button{touch-action:manipulation;-webkit-tap-highlight-color:t
             <tr><td>Bibles Distributed</td><td id="m-out-en">0</td><td id="m-out-es">0</td><td id="m-out-cn">0</td></tr>
           </tbody>
         </table>
-        <div class="dist-only" style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:14px">
-          <span class="label">Outreach this month</span>
+        <details class="outreach dist-only">
+          <summary>Outreach this month</summary>
           <dl class="yearstats" id="monthStats"></dl>
-        </div>
+        </details>
       </section>
 
       <section class="card" aria-labelledby="stockTitle">
@@ -304,10 +324,10 @@ button,.chip,.seg button{touch-action:manipulation;-webkit-tap-highlight-color:t
             <tr><td>Bibles Distributed</td><td id="out-en">0</td><td id="out-es">0</td><td id="out-cn">0</td></tr>
           </tbody>
         </table>
-        <div class="dist-only" style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:14px">
-          <span class="label">Outreach this year</span>
+        <details class="outreach dist-only">
+          <summary>Outreach this year</summary>
           <dl class="yearstats" id="yearStats"></dl>
-        </div>
+        </details>
       </section>
 
       <section class="card dist-only" aria-labelledby="purpTitle">
@@ -343,7 +363,7 @@ button,.chip,.seg button{touch-action:manipulation;-webkit-tap-highlight-color:t
 const API_URL = "https://script.google.com/macros/s/AKfycbyBVZaYZoZbLq4gcDsWX2t1uGxelvTuq6Bxdeyx3se7oJrkm3l7ICPmcNNVUERik6TS/exec";
 
 const SEED = [];
-const DEFAULT_PURPOSES = ["Gospelizing", "Campus Work", "TSUF"];
+const DEFAULT_PURPOSES = ["DMV", "Community", "Campus", "YP", "Children"];
 const RETIRED_PURPOSES = ["Distribution", "College Tabling"]; // older labels: still shown, not offered as buttons
 const IN_PURPOSES = ["Restock", "Initial Inventory"];
 const LOW_STOCK = 30;
@@ -360,7 +380,7 @@ const CAT = ["--c1","--c2","--c3","--c4","--c5","--c6","--c7","--c8"];
 const $ = id => document.getElementById(id);
 let entries = [];
 let type = "out";
-let purpose = "Gospelizing";
+let purpose = "DMV";
 let showAll = false;
 let monthOffset = 0; // 0 = this month, 1 = last month, ...
 
@@ -424,6 +444,7 @@ function render(){
     for(const [k] of STATS)mStats[k]=(mStats[k]||0)+(+e[k]||0);
   }
   for(const [c] of LANGS){$("m-in-"+c).textContent=mt.in[c];$("m-out-"+c).textContent=mt.out[c]}
+  window.__month={name:mName,mt};
   $("monthStats").innerHTML=STATS.map(([k,l])=>`<div><dt>${l}</dt><dd>${mStats[k]||0}</dd></div>`).join("");
   const tot={in:{},out:{},hand:{}},yearTot={},byP=new Map();
   for(const [c] of LANGS){tot.in[c]=0;tot.out[c]=0;tot.hand[c]=0}
@@ -440,6 +461,7 @@ function render(){
     $("flag-"+c).innerHTML=h<0?'<span class="pill bad">Add a count</span>':h<LOW_STOCK?'<span class="pill">Low</span>':"";
   }
   $("yearStats").innerHTML=STATS.map(([k,l])=>`<div><dt>${l}</dt><dd>${yearTot[k]||0}</dd></div>`).join("");
+  buildShare(year,tot);
 
   // pie: total Bibles distributed this year, by purpose
   const rows=[...byP.entries()].sort((a,b)=>b[1]-a[1]);
@@ -478,17 +500,25 @@ function render(){
   renderChips();
 }
 
+let shareText="";
+function buildShare(year,tot){
+  const m=window.__month,L=[["en","English"],["es","Spanish"],["cn","Chinese"]];
+  const today=new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+  const lines=["*Church in Burlingame | Bible Inventory*",today,"",
+    "*Current inventory (on hand now)*",...L.map(([c,n])=>`${n}: ${tot.hand[c]}`),"",
+    `*${m.name}*`,...L.map(([c,n])=>`${n}: ${m.mt.in[c]} ordered, ${m.mt.out[c]} distributed`),"",
+    `*${year} so far*`,...L.map(([c,n])=>`${n}: ${tot.in[c]} ordered, ${tot.out[c]} distributed`)];
+  shareText=lines.join("\n");
+  $("shareWa").href="https://wa.me/?text="+encodeURIComponent(shareText);
+}
+
 function statLine(e){
   const parts=STATS.filter(([k])=>+e[k]>0).map(([k,l])=>`${+e[k]} ${l.toLowerCase()}`);
   return parts.length?`<span class="note">${esc(parts.join(" · "))}</span>`:"";
 }
 
 function renderChips(){
-  const used=entries.filter(e=>!isIn(e)).map(e=>e.purpose);
-  const list=[...new Set([...DEFAULT_PURPOSES,...used])].filter(p=>!IN_PURPOSES.includes(p)&&!RETIRED_PURPOSES.includes(p)).slice(0,9);
-  $("chips").innerHTML=list.map(p=>`<button type="button" class="chip" data-p="${esc(p)}" aria-pressed="${p===purpose}">${esc(p)}</button>`).join("")
-    +`<button type="button" class="chip" data-p="__other" aria-pressed="${purpose==="__other"}">Other…</button>`;
-  $("otherPurpose").hidden=purpose!=="__other";
+  $("chips").innerHTML=DEFAULT_PURPOSES.map(p=>`<button type="button" class="chip" data-p="${esc(p)}" aria-pressed="${p===purpose}">${esc(p)}</button>`).join("");
 }
 
 /* ---------- data ---------- */
@@ -527,14 +557,14 @@ function setType(t){
   $("submitBtn").textContent=t==="out"?"Submit distribution":"Add to inventory";
   $("nameLabel").textContent=t==="out"?"Your name":"Ordered by";
   $("name").placeholder=t==="out"?"Name, or names of everyone who went":"Who ordered or brought them in";
-  $("notesLabel").innerHTML=t==="out"?"Testimonials <small>share this during prayer meeting or Lord's Day</small>":"Notes <small>optional</small>";
+  $("notesLabel").innerHTML=t==="out"?"Testimonials <small>optional · share during prayer meeting or the Lord's Day</small>":"Notes <small>optional</small>";
   $("notes").placeholder=t==="out"?"Who did you meet? How did the Lord move?":"Where they came from, order number, etc.";
   $("formMsg").textContent="";
   render();
 }
 $("typeOut").onclick=()=>setType("out");
 $("typeIn").onclick=()=>setType("in");
-$("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;purpose=b.dataset.p;renderChips();if(purpose==="__other")$("otherPurpose").focus()});
+$("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;purpose=b.dataset.p;renderChips()});
 $("moreBtn").onclick=()=>{showAll=!showAll;render()};
 $("monthPrev").onclick=()=>{monthOffset++;render()};
 $("monthNext").onclick=()=>{if(monthOffset>0){monthOffset--;render()}};
@@ -548,7 +578,7 @@ $("entryForm").addEventListener("submit",async ev=>{
   for(const k in q)q[k]=Math.max(0,Math.round(q[k]));
   const bibles=q.english+q.spanish+q.chinese;
   const name=$("name").value.trim(),date=$("date").value;
-  const p=type==="in"?"Restock":purpose==="__other"?$("otherPurpose").value.trim():purpose;
+  const p=type==="in"?"Restock":purpose;
   const problems=[],stats={};
   for(const [k] of STATS){const v=type==="in"?0:Math.max(0,Math.round(+$("st-"+k).value||0));if(v)stats[k]=v;if(v>5000)problems.push("keep each count under 5,000")}
   if(!bibles&&(type==="in"||!Object.keys(stats).length))problems.push(type==="in"?"enter how many New Testaments were added":"enter at least one count");
@@ -564,8 +594,7 @@ $("entryForm").addEventListener("submit",async ev=>{
   try{
     await save(entry);
     try{localStorage.setItem("bil-name",name)}catch(e){}
-    if(purpose==="__other")purpose=p;
-    for(const id of ["qtyEn","qtyEs","qtyCn","notes","otherPurpose",...STATS.map(([k])=>"st-"+k)])$(id).value="";
+    for(const id of ["qtyEn","qtyEs","qtyCn","notes",...STATS.map(([k])=>"st-"+k)])$(id).value="";
     $("locSuggest").hidden=true;
     msg.classList.add("ok");
     msg.textContent=`Saved: ${bibles} Bibles ${type==="in"?"added to inventory":"distributed"}${API_URL?"":" (preview only, not stored)"}. Thank you!`;
@@ -573,6 +602,13 @@ $("entryForm").addEventListener("submit",async ev=>{
   }catch(err){msg.classList.add("err");msg.textContent="Couldn't save: "+err.message+". Check your connection and submit again."}
   finally{$("submitBtn").disabled=false}
 });
+
+$("shareCopy").onclick=()=>{
+  const msg=$("shareMsg");
+  const done=()=>{msg.textContent="Copied. Open WhatsApp and paste.";setTimeout(()=>msg.textContent="",4000)};
+  const fallback=()=>{const t=$("shareFallback");t.hidden=false;t.value=shareText;t.focus();t.select();msg.textContent="Press and hold the text, then Copy."};
+  try{navigator.clipboard.writeText(shareText).then(done,fallback)}catch(e){fallback()}
+};
 
 /* ---------- start ---------- */
 $("statFields").innerHTML=STATS.map(([k,l])=>`<label for="st-${k}">${l}<input id="st-${k}" type="number" inputmode="numeric" min="0" max="5000" placeholder="0"></label>`).join("");
